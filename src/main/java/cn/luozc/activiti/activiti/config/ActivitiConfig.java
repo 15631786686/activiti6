@@ -3,32 +3,31 @@ package cn.luozc.activiti.activiti.config;
 import java.io.IOException;
 
 
-import cn.luozc.activiti.activiti.datasource.DBIdentifier;
-import cn.luozc.activiti.activiti.datasource.DDSHolder;
-import cn.luozc.activiti.activiti.datasource.DynamicDataSource;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 /**
  * 使用Java类完成配置文件
  * @author zc 2018-06-04
  */
 @Configuration
+@EnableCaching
 public class ActivitiConfig {
 
-    @Autowired
-    private DataSource dataSource2;
+    @Resource
+    private DataSource dataSource;
     @Autowired
     private ResourcePatternResolver resourceLoader;
 
@@ -38,15 +37,6 @@ public class ActivitiConfig {
      */
     @Bean
     public StandaloneProcessEngineConfiguration processEngineConfiguration() {
-        DynamicDataSource d = new DynamicDataSource();
-        DataSource dataSource = null;
-        try {
-            dataSource = d.initDDS("activiti2");
-        } catch (IllegalAccessException e) {
-
-        }finally {
-            dataSource = dataSource==null?dataSource2:dataSource;
-        }
         StandaloneProcessEngineConfiguration configuration = new StandaloneProcessEngineConfiguration();
         configuration.setDataSource(dataSource);
         configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);

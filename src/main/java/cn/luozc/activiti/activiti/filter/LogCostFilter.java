@@ -20,7 +20,7 @@ public class LogCostFilter implements Filter {
     private PatternMatcher pathMatcher = new ServletPathMatcher();
     @Override
     public void init(FilterConfig config) throws ServletException {
-        String param = "*.js,*.css,*.jpg,*.png,*.ico,*.html,*.gif,/sys/druid/*,/static/*,/user/*";
+        String param = "*.js,*.css,*.jpg,*.png,*.ico,*.html,*.gif,/user/login";
         this.excludesPattern = new HashSet (Arrays.asList(param.split("\\s*,\\s*")));
     }
     @Override
@@ -28,10 +28,12 @@ public class LogCostFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String uri = request.getRequestURI();
         StringBuffer url = request.getRequestURL();
+        ((HttpServletRequest) servletRequest).getSession().setAttribute("dataBase","activiti");
+
         //记录请求的信息
-//        logger.info("请求者IP = {},请求这主机名称 = {},服务器的主机名 = {}, 请求的端口号 = {},请求的URI = {},请求者的 URL = {}"
-//                ,servletRequest.getRemoteAddr(),servletRequest.getRemoteHost()
-//                ,servletRequest.getServerName(),servletRequest.getServerPort(),uri,url);
+        logger.info("请求者IP = {},请求这主机名称 = {},服务器的主机名 = {}, 请求的端口号 = {},请求的URI = {},请求者的 URL = {}"
+                ,servletRequest.getRemoteAddr(),servletRequest.getRemoteHost()
+                ,servletRequest.getServerName(),servletRequest.getServerPort(),uri,url);
 
 
         filterChain.doFilter(servletRequest,servletResponse);
